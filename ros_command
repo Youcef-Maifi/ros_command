@@ -1,0 +1,72 @@
+-- install ROS Humble:
+locale  # check for UTF-8
+sudo apt update && sudo apt install locales
+sudo locale-gen en_US en_US.UTF-8
+sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
+locale  # verify settings
+sudo apt install software-properties-common
+sudo add-apt-repository universe
+sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
+sudo apt update
+sudo apt upgrade
+sudo apt install ros-humble-desktop
+# Replace ".bash" with your shell if you're not using bash
+# Possible values are: setup.bash, setup.sh, setup.zsh
+source /opt/ros/humble/setup.bash
+
+sudo apt install ros-humble-xacro ros-humble-joint-state-publisher-gui
+sudo apt install ros-humble-gazebo-ros-pkgs
+sudo apt install python3-serial
+sudo apt install ros-humble-rplidar-ros
+sudo apt install ros-humble-rqt-image-view
+sudo apt install ros-humble-ros2-control ros-humble-ros2-controllers ros-humble-gazebo-ros2-control
+
+systemctl set-default
+sudo systemctl set-default multi-user.target # no graphic
+sudo systemctl set-default graphical.target # with graphic
+
+ls /dev/serial/by-id # to know the name of compenent in the serial port
+
+-- prosses runnig in the computer:
+pstree
+
+-- install colcon:
+sudo apt install python3-colcon-common-extensions
+
+-- make directory & build package:
+mkdir -p dev_ws/src
+cd dev_ws
+colcon build --symlink-install
+cd src
+ros2 pkg create --build-type ament_cmake my_package
+
+-- install git:
+sudo apt install git
+git config --global user.name "Youcef-Maifi"
+git config --global user.email "yovoy@outlook.sa"
+git clone https://github.com/Youcef-Maifi/articubot_one.git
+cat Readme.md #to see the contanet of the file
+gedit hello.py #to open the file with text editor
+git status # to see the branch statuts
+git add . # to add everything to github
+git add hello.py # to add file to github
+git commit -m "code python" # to add a comment
+git push origin main
+git remote set-url origin https://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@github.com/Youcef-Maifi/articubot_one.git
+
+-- use ssh:
+ssh yovoy@192.168.8.4 # connect to server
+scp <file_name> yovoy@192.168.8.4:<derectory> # transfare file
+scp -r <folder_name> yovoy@192.168.8.4:<derectory> # transfare folder
+touch <file_name> # to create a file
+
+-- run command:
+rviz2 -d src/articubot_one/config/view_bot.rviz
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+ros2 launch my_bot launch_sim.launch.py world:=path/to/obstacles.world
+ros2 launch rplidar.launch.py
+ros2 run rqt_image_view rqt_image_view
+ros2 launch camera.launch.py
